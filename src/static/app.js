@@ -41,6 +41,48 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function displayActivities(activities) {
+    const activitiesList = document.getElementById('activities-list');
+    const activitySelect = document.getElementById('activity');
+    
+    activitiesList.innerHTML = '';
+    activitySelect.innerHTML = '<option value="">-- Select an activity --</option>';
+    
+    activities.forEach(activity => {
+      // Create activity card
+      const card = document.createElement('div');
+      card.className = 'activity-card';
+      
+      const participantsList = activity.participants && activity.participants.length > 0
+        ? `<ul class="participants-list">
+            ${activity.participants.map(p => `<li>${p}</li>`).join('')}
+           </ul>`
+        : `<p class="no-participants">No participants yet. Be the first to sign up!</p>`;
+      
+      const participantCount = activity.participants ? activity.participants.length : 0;
+      
+      card.innerHTML = `
+        <h4>${activity.name}</h4>
+        <p>${activity.description || 'Join us for this exciting activity!'}</p>
+        <div class="participants-section">
+          <h5>
+            Participants
+            <span class="participant-count">${participantCount}</span>
+          </h5>
+          ${participantsList}
+        </div>
+      `;
+      
+      activitiesList.appendChild(card);
+      
+      // Add to select dropdown
+      const option = document.createElement('option');
+      option.value = activity.id || activity.name;
+      option.textContent = activity.name;
+      activitySelect.appendChild(option);
+    });
+  }
+
   // Handle form submission
   signupForm.addEventListener("submit", async (event) => {
     event.preventDefault();
